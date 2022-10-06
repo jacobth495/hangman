@@ -1,15 +1,18 @@
 # frozen_string_literal: true
+require 'json'
 
 class Board
-  attr_accessor :answer, :game_array, :guess
+  attr_accessor :answer, :game_array, :guess, :tried_guesses, :tries
 
   def initialize
     words = []
+    @tried_guesses = []
     File.foreach('google_10000_words.txt') do |word|
       words << word.strip
     end
     @answer = words[rand(1..9894)].split('')
     @game_array = Array.new(answer.length, nil)
+    @tries = 3
   end
 
   def guess
@@ -21,6 +24,10 @@ class Board
       if answer.any?(@guess)
         game_arr_index = answer.index(@guess)
         game_array[game_arr_index] = @guess
+        tried_guesses << @guess
+      else
+        tried_guesses << @guess
+        @tries -= 1
       end
     elsif @guess.length > 1
       equals = true
@@ -42,8 +49,13 @@ class Board
     end
   end
 
+  def show_tried_guesses
+    p tried_guesses
+  end
+
   def show_game_array
     p game_array
+    puts tries
   end
 
   def show_answer
@@ -57,3 +69,5 @@ x.show_answer
 x.guess
 x.check_guess
 x.show_game_array
+
+p JSON.parse(x.to_s)
