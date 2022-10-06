@@ -11,7 +11,7 @@ class Board
       words << word.strip
     end
     @answer = words[rand(1..9894)].split('')
-    @game_array = Array.new(answer.length, ' ')
+    @game_array = Array.new(answer.length, '_')
     @tries = 5
   end
 
@@ -56,8 +56,9 @@ class Board
   def gameover?
     if tries <= 0
       true
+      puts "Sorry you lost :'("
       puts show_answer
-    elsif game_array.any?(' ') == false
+    elsif game_array.any?('_') == false
       true
       puts 'Congrats you won!!'
     else
@@ -73,7 +74,7 @@ class Board
 
   def show_game_array
     puts 'Guess the word just like hangman minus the fancy graphics'
-    p game_array
+    p game_array.join
     puts "You have #{tries} tries left"
   end
 
