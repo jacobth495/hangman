@@ -12,11 +12,15 @@ class Board
     end
     @answer = words[rand(1..9894)].split('')
     @game_array = Array.new(answer.length, nil)
-    @tries = 3
+    @tries = 5
   end
 
   def guess
     @guess = gets.chomp
+    if @guess == 'save'
+      save()
+      exit
+    end
   end
 
   def check_guess
@@ -49,25 +53,51 @@ class Board
     end
   end
 
+  def gameover?
+    if tries <= 0
+      true
+      puts show_answer
+    elsif game_array.any?(nil) == false
+      true
+      puts 'Congrats you won!!'
+    else
+      false
+    end
+  end
+
   def show_tried_guesses
+    puts ''
+    puts "Your guesses so far"
     p tried_guesses
   end
 
   def show_game_array
+    puts 'nil = blank'
+    puts 'Guess the word just like hangman minus the fancy graphics'
     p game_array
-    puts tries
+    puts "You have #{tries} tries left"
   end
 
   def show_answer
-    p answer
+    answer = @answer.join
+    puts "The answer was #{answer}"
+  end
+
+  def save
+    File.open('saved.json','w') do |f|
+      JSON.dump(tries, f)
+      JSON.dump(answer, f)
+      JSON.dump(game_array, f)
+      JSON.dump(tried_guesses, f)
+    end
   end
 end
 
 x = Board.new
 
-x.show_answer
-x.guess
-x.check_guess
-x.show_game_array
-
-p JSON.parse(x.to_s)
+while x.gameover? == false
+  x.show_game_array
+  x.guess
+  x.check_guess
+  x.show_tried_guesses
+end
