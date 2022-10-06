@@ -1,0 +1,35 @@
+--- !ruby/object:Board
+tried_guesses:
+- a
+- f
+- s
+- d
+- f
+answer:
+- b
+- i
+- b
+- l
+- i
+- o
+- g
+- r
+- a
+- p
+- h
+- "y"
+game_array:
+- " "
+- " "
+- " "
+- " "
+- " "
+- " "
+- " "
+- " "
+- a
+- " "
+- " "
+- " "
+tries: 1
+guess: save

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'json'
+require 'yaml'
 
 class Board
   attr_accessor :answer, :game_array, :guess, :tried_guesses, :tries
@@ -11,7 +11,7 @@ class Board
       words << word.strip
     end
     @answer = words[rand(1..9894)].split('')
-    @game_array = Array.new(answer.length, nil)
+    @game_array = Array.new(answer.length, ' ')
     @tries = 5
   end
 
@@ -57,7 +57,7 @@ class Board
     if tries <= 0
       true
       puts show_answer
-    elsif game_array.any?(nil) == false
+    elsif game_array.any?(' ') == false
       true
       puts 'Congrats you won!!'
     else
@@ -72,7 +72,6 @@ class Board
   end
 
   def show_game_array
-    puts 'nil = blank'
     puts 'Guess the word just like hangman minus the fancy graphics'
     p game_array
     puts "You have #{tries} tries left"
@@ -84,20 +83,30 @@ class Board
   end
 
   def save
-    File.open('saved.json','w') do |f|
-      JSON.dump(tries, f)
-      JSON.dump(answer, f)
-      JSON.dump(game_array, f)
-      JSON.dump(tried_guesses, f)
+    #save_data = {:tries => tries, :answer => answer, :game_array => game_array, :tried_guesses => tried_guesses}
+    File.open('saved.yaml','w') do |f|
+      f.puts(self.to_yaml)
+    end
+  end
+
+  def load
+    File.open('saved.yaml', 'r') do |f|
+      YAML.load(f, permitted_classes: [Board])
     end
   end
 end
 
 x = Board.new
 
+puts 'Type load to start from saved game hit enter to continue'
+a = gets.chomp
+if a == 'load'
+  x = x.load()
+end
+
 while x.gameover? == false
+  x.show_tried_guesses
   x.show_game_array
   x.guess
   x.check_guess
-  x.show_tried_guesses
 end
