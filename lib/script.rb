@@ -26,8 +26,11 @@ class Board
   def check_guess
     if @guess.length == 1
       if answer.any?(@guess)
-        game_arr_index = answer.index(@guess)
-        game_array[game_arr_index] = @guess
+        answer.each_with_index do |l, i|
+          if answer[i] == @guess
+          game_array[i] = @guess
+          end
+        end
         tried_guesses << @guess
       else
         tried_guesses << @guess
